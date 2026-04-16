@@ -1,6 +1,8 @@
 package com.ecommerce.ecomm.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name="user")
@@ -8,25 +10,36 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
+    @NotBlank(message = "Name is required")
     private String name;
-    private String email;
-    private String password;
 
+    @NotBlank(message = "Invalid email")
+    private String email;
+
+    @NotBlank(message = "Password is required")
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{6,}$",
+            message = "Password must be 6+ chars, include uppercase, number & special char"
+    )
+    private String password;
+    private String phone;
+    
     public User()
     {
 
     }
 
-    public User(int id, String name, String email, String password) {
+    public User(Integer id, String name, String email, String password, String phone) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.phone = phone;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -57,4 +70,14 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+    
+    
 }
