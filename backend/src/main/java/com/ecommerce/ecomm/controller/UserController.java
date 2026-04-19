@@ -3,14 +3,18 @@ package com.ecommerce.ecomm.controller;
 import com.ecommerce.ecomm.model.User;
 import com.ecommerce.ecomm.repository.UserRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3001")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -22,7 +26,7 @@ public class UserController {
         User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setPhone(dto.getPhone());
 
         userRepository.save(user);

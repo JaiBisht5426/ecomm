@@ -27,18 +27,25 @@ const handleSubmit = async (e) => {
       },
       body: JSON.stringify({
         ...user,
-        phone: Number(user.phone)
+        phone: user.phone ? Number(user.phone) : null
       })
     });
 
     const data = await response.text();
+
+    if (!response.ok) {
+      alert("Error: " + data);  // 👈 actual error show karega
+      return;
+    }
+
     alert(data);
 
   } catch (error) {
     console.error(error);
-    alert("Error occurred ❌");
+    alert("Server not reachable ❌");
   }
 };
+
 
 
 
