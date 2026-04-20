@@ -4,6 +4,7 @@ import com.ecommerce.ecomm.model.User;
 import com.ecommerce.ecomm.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,5 +33,18 @@ public class UserController {
         userRepository.save(user);
 
         return "User Registered Successfully ✅";
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@RequestBody User loginRequest) {
+
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return "Login Successful";
     }
 }
