@@ -6,6 +6,7 @@ import com.ecommerce.ecomm.util.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,5 +60,11 @@ public class UserController {
 
         return token;
     }
+
+    @GetMapping("/protected")
+    public String protectedApi(Authentication auth) {
+        return "Welcome " + auth.getName();
+    }
+
 
 }
