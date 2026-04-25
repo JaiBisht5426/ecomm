@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+
+  const navigate = useNavigate();
 
   const [user, setUser] = useState({
     email: "",
@@ -26,6 +29,11 @@ function LoginPage() {
         body: JSON.stringify(user)
       });
 
+      // ❗ Check response
+      if (!response.ok) {
+        throw new Error("Invalid credentials");
+      }
+
       const token = await response.text();
 
       // 🔐 Save token
@@ -33,20 +41,37 @@ function LoginPage() {
 
       alert("Login Successful ✅");
 
+      // 🔥 Redirect to dashboard
+      navigate("/dashboard");
+
     } catch (error) {
+      console.error(error);
       alert("Login Failed ❌");
     }
   };
 
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       <h2>Login</h2>
 
       <form onSubmit={handleLogin}>
-        <input name="email" placeholder="Email" onChange={handleChange} />
-        <br />
-        <input name="password" placeholder="Password" onChange={handleChange} />
-        <br />
+        <input
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          required
+        />
+        <br /><br />
+
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+          required
+        />
+        <br /><br />
+
         <button type="submit">Login</button>
       </form>
     </div>
