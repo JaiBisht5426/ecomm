@@ -20,16 +20,19 @@ public class Product {
 
     private String imageUrl;
 
+    private String category;
+
     // ✅ Constructors
     public Product() {}
 
-    public Product(Long id, String name, String description, double price, int quantity, String imageUrl) {
+    public Product(Long id, String name, String description, double price, int quantity, String imageUrl, String category) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
         this.imageUrl = imageUrl;
+        this.category = category;
     }
 
     // ✅ Getters & Setters
@@ -80,6 +83,14 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
 

@@ -42,7 +42,7 @@ function LoginPage() {
       alert("Login Successful ✅");
 
       // 🔥 Redirect to dashboard
-      navigate("/dashboard");
+      navigate("/products");
 
     } catch (error) {
       console.error(error);
