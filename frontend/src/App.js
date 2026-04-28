@@ -4,19 +4,20 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from './pages/LoginPage';
 import Dashboard from "./pages/Dashboard";
 import ProductPage from "./pages/ProductPage";
+import ProtectedRoute from './pages/ProtectedRoute';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 function App() {
    return (
     <Router>
-      <h1 style={{ textAlign: "center" }}>E-Commerce App</h1>
+      {/* <h1 style={{ textAlign: "center" }}>E-Commerce App</h1> */}
 
       <Routes>
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/products" element={<ProductPage />}/>
+        <Route path="/products" element={<ProtectedRoute roleRequired="ADMIN"><ProductPage /></ProtectedRoute>}/>
 
       </Routes>
     </Router>

@@ -26,18 +26,21 @@ public class User {
     )
     private String password;
     private String phone;
+
+    private String role;
     
     public User()
     {
 
     }
 
-    public User(Integer id, String name, String email, String password, String phone) {
+    public User(Integer id, String name, String email, String password, String phone, String role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
+        this.role = role;
     }
 
     public Integer getId() {
@@ -79,6 +82,11 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-    
-    
+
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

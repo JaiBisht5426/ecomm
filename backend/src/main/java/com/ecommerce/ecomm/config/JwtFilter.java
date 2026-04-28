@@ -1,18 +1,20 @@
 package com.ecommerce.ecomm.config;
 
 import com.ecommerce.ecomm.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -29,32 +31,35 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 🔹 Step 1: Get Authorization Header
+        // 🔹 1. Authorization header lo
         String authHeader = request.getHeader("Authorization");
 
-        // 🔹 Step 2: Check if header contains Bearer token
+        // 🔹 2. Check karo Bearer token hai ya nahi
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
             String token = authHeader.substring(7);
 
             try {
-                // 🔹 Step 3: Validate token first
+                // 🔹 3. Validate token
                 if (jwtUtil.validateToken(token)) {
 
-                    // 🔹 Step 4: Extract user info (email)
-                    String email = jwtUtil.extractEmail(token);
+                    // 🔹 4. Claims extract karo
+                    Claims claims = jwtUtil.extractClaims(token);
 
-                    // 🔹 Step 5: Avoid duplicate authentication
+                    String email = claims.getSubject();
+                    String role = claims.get("role", String.class);
+
+                    // 🔹 5. Agar already authenticated nahi hai
                     if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
                         UsernamePasswordAuthenticationToken authentication =
                                 new UsernamePasswordAuthenticationToken(
                                         email,
                                         null,
-                                        Collections.emptyList()
+                                        List.of(new SimpleGrantedAuthority("ROLE_" + role))
                                 );
 
-                        // 🔹 Step 6: Set authentication in context
+                        // 🔹 6. Set authentication
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                 } else {
@@ -62,11 +67,11 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
 
             } catch (Exception e) {
-                System.out.println("JWT Error: " + e.getMessage());
+                System.out.println("JWT Error ❌: " + e.getMessage());
             }
         }
 
-        // 🔹 Step 7: Continue filter chain
+        // 🔹 7. Aage request bhejo
         filterChain.doFilter(request, response);
     }
 }

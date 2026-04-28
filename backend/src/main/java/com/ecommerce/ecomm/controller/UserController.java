@@ -21,7 +21,8 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository)
+    {
         this.userRepository = userRepository;
     }
 
@@ -29,8 +30,16 @@ public class UserController {
     public String registerUser(@Valid @RequestBody User dto) {
 
         User user = new User();
+
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
+        if(dto.getEmail().equals("admin@gmail.com"))
+        {
+            user.setRole("ADMIN");
+        }
+        else{
+            user.setRole("USER");
+        }
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setPhone(dto.getPhone());
 
@@ -56,7 +65,7 @@ public class UserController {
             throw new RuntimeException("Invalid password ❌");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
         return token;
     }

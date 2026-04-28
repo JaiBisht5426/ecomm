@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Login.css"; // 👈 same CSS reuse
 
 function RegisterPage() {
 
@@ -9,6 +11,8 @@ function RegisterPage() {
     phone: ""
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setUser({
       ...user,
@@ -16,96 +20,81 @@ function RegisterPage() {
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await fetch("http://localhost:8080/api/users/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        ...user,
-        phone: user.phone ? Number(user.phone) : null
-      })
-    });
+    try {
+      const response = await fetch("http://localhost:8080/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ...user,
+          phone: Number(user.phone) // 👈 important
+        })
+      });
 
-    const data = await response.text();
+      const data = await response.text();
 
-    if (!response.ok) {
-      alert("Error: " + data);  // 👈 actual error show karega
-      return;
+      alert(data);
+      navigate("/login");
+
+    } catch (error) {
+      alert("Registration Failed ❌");
     }
-
-    alert(data);
-
-  } catch (error) {
-    console.error(error);
-    alert("Server not reachable ❌");
-  }
-};
-
-
-
+  };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Registration Page</h2>
+    <div className="login-container">
 
-      <form onSubmit={handleSubmit} style={{ display: "inline-block" }}>
-        
-        <div>
+      <div className="login-card">
+        <h2>Register</h2>
+
+        <form onSubmit={handleRegister}>
+
           <input
             type="text"
             name="name"
             placeholder="Enter Name"
-            value={user.name}
             onChange={handleChange}
+            required
           />
-        </div>
 
-        <br />
-
-        <div>
           <input
             type="email"
             name="email"
             placeholder="Enter Email"
-            value={user.email}
             onChange={handleChange}
+            required
           />
-        </div>
 
-        <br />
-
-        <div>
           <input
             type="password"
             name="password"
             placeholder="Enter Password"
-            value={user.password}
             onChange={handleChange}
+            required
           />
-        </div>
 
-        <br />
-
-        <div>
           <input
             type="text"
             name="phone"
-            placeholder="Enter Phone Number"
-            value={user.phone}
+            placeholder="Enter Phone"
             onChange={handleChange}
+            required
           />
-        </div>
 
-        <br />
+          <button type="submit">Register</button>
+        </form>
 
-        <button type="submit">Register</button>
+        <p>
+          Already have an account?
+          <span onClick={() => navigate("/login")}> Login</span>
+        </p>
 
-      </form>
+      </div>
+
     </div>
   );
 }

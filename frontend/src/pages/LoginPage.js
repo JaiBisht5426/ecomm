@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Login.css";
 
 function LoginPage() {
-
-  const navigate = useNavigate();
 
   const [user, setUser] = useState({
     email: "",
     password: ""
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUser({
@@ -29,51 +30,65 @@ function LoginPage() {
         body: JSON.stringify(user)
       });
 
-      // ❗ Check response
       if (!response.ok) {
-        throw new Error("Invalid credentials");
+        throw new Error("Login failed");
       }
 
       const token = await response.text();
 
-      // 🔐 Save token
       localStorage.setItem("token", token);
 
-      alert("Login Successful ✅");
-
-      // 🔥 Redirect to dashboard
-      navigate("/products");
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const role = payload.role;
+      
+      if(role === "ADMIN")
+      {
+        alert("Login Successful ✅");
+        navigate("/products");
+      }
+      else
+      {
+        alert("Login Successful ✅");
+        navigate("/dashboard");
+      }
 
     } catch (error) {
-      console.error(error);
-      alert("Login Failed ❌");
+      alert("Invalid Credentials ❌");
     }
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h2>Login</h2>
+    <div className="login-container">
 
-      <form onSubmit={handleLogin}>
-        <input
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-        />
-        <br /><br />
+      <div className="login-card">
+        <h2>Login</h2>
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-        />
-        <br /><br />
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            onChange={handleChange}
+            required
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter Password"
+            onChange={handleChange}
+            required
+          />
+
+          <button type="submit">Login</button>
+        </form>
+
+        <p>
+          Don't have an account? 
+          <span onClick={() => navigate("/register")}> Register</span>
+        </p>
+      </div>
+
     </div>
   );
 }
