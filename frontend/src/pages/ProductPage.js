@@ -112,7 +112,8 @@ function ProductPage() {
       {/* PRODUCT GRID */}
       <div className="product-grid">
 
-        {products.map((p) => (
+        {
+          products.map((p) => (
           <div key={p.id} className="product-card">
 
             <img src={p.imageUrl} alt={p.name} />

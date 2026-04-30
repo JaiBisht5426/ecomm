@@ -28,6 +28,13 @@ public class ProductController {
         return "Product Added ✅";
     }
 
+    @GetMapping("/viewproducts")
+    public List<Product> viewProducts()
+    {
+        return productRepository.findAll();
+    }
+
+
     @GetMapping("/filter")
     public List<Product> filterProducts(
             @RequestParam(required = false) String name,

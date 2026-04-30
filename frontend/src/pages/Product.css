@@ -94,3 +94,15 @@ h1 {
   font-size: 13px;
   color: #007bff;
 }
+
+.filters {
+  margin: 15px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.filters input,
+.filters select {
+  padding: 8px;
+}
+

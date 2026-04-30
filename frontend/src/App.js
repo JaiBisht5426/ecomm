@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import Dashboard from "./pages/Dashboard";
 import ProductPage from "./pages/ProductPage";
 import ProtectedRoute from './pages/ProtectedRoute';
+import ViewProductPage from './pages/ViewProductPage';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
@@ -18,6 +19,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/products" element={<ProtectedRoute roleRequired="ADMIN"><ProductPage /></ProtectedRoute>}/>
+        <Route path="/viewproducts" element={<ViewProductPage />} />
+
 
       </Routes>
     </Router>

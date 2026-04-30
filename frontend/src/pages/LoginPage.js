@@ -49,7 +49,7 @@ function LoginPage() {
       else
       {
         alert("Login Successful ✅");
-        navigate("/dashboard");
+        navigate("/viewproducts");
       }
 
     } catch (error) {
