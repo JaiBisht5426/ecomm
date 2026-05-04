@@ -5,13 +5,13 @@ import com.ecommerce.ecomm.model.Product;
 import com.ecommerce.ecomm.repository.CartRepository;
 import com.ecommerce.ecomm.repository.ProductRepository;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")
+@CrossOrigin(origins = "*")
 public class CartController
 {
 
@@ -26,15 +26,41 @@ public class CartController
     @PostMapping
     public String addToCart(@RequestBody CartItem item, Authentication auth) {
 
-        item.setUserEmail(auth.getName());
+        String email = auth.getName();
+
         Product product = productRepository.findById(item.getProduct().getId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        item.setProduct(product);
+        // 🔥 Check if already exists
+        CartItem existingItem = cartRepository
+                .findByUserEmailAndProduct_Id(email, product.getId());
 
-        cartRepository.save(item);
+        if (existingItem != null) {
+            // ✅ update quantity
+            existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
+            cartRepository.save(existingItem);
+        } else {
+            // ✅ new item
+            item.setUserEmail(email);
+            item.setProduct(product);
+            cartRepository.save(item);
+        }
 
         return "Added to cart ✅";
     }
 
+
+    @GetMapping
+    public List<CartItem> getCartItems(Authentication auth) {
+
+        String email = auth.getName();
+
+        return cartRepository.findByUserEmail(email);
+    }
+
+//    @GetMapping
+//    public CartItem getCartByid(@RequestParam int id)
+//    {
+//        return cartRepository.getCartById(id);
+//    }
 }

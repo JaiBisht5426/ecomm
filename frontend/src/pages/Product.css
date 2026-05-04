@@ -106,3 +106,7 @@ h1 {
   padding: 8px;
 }
 
+.product-card {
+  cursor: pointer;
+}
+

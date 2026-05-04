@@ -115,7 +115,7 @@ function ViewProductPage() {
 
         {
           sortedProducts.map((p) => (
-          <div key={p.id} className="product-card">
+          <div key={p.id} className="product-card" onClick={() => navigate(`/viewproducts/${p.id}`)}>
 
             <img src={p.imageUrl} alt={p.name} />
 
@@ -125,7 +125,7 @@ function ViewProductPage() {
             <div className="price">₹ {p.price}</div>
             <div className="qty">Qty: {p.quantity}</div>
             <div className="category">{p.category}</div>
-
+            <button onClick={() => navigate("/cart")}>Go to Cart 🛒</button>
           </div>
         ))}
        </div>

@@ -13,6 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>
 
     List<Product> findByNameContainingIgnoreCaseAndCategory(String name, String category);
 
-    Product getProductById(int id);
+    Product getProductById(Long id);
 }
 

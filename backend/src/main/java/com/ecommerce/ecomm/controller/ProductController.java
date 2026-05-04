@@ -72,9 +72,11 @@ public class ProductController {
         return productRepository.findAll();
     }
 
-    @GetMapping("/product")
-    public Product getProductById(@RequestParam int id)
-    {
-        return productRepository.getProductById(id);
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
     }
+
+
 }

@@ -2,6 +2,8 @@ package com.ecommerce.ecomm.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -14,9 +16,9 @@ public class Product {
 
     private String description;
 
-    private double price;
+    private BigDecimal price;
 
-    private int quantity;
+    private Integer quantity;
 
     private String imageUrl;
 
@@ -25,7 +27,7 @@ public class Product {
     // ✅ Constructors
     public Product() {}
 
-    public Product(Long id, String name, String description, double price, int quantity, String imageUrl, String category) {
+    public Product(Long id, String name, String description, BigDecimal price, Integer quantity, String imageUrl, String category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -61,19 +63,19 @@ public class Product {
         this.description = description;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
