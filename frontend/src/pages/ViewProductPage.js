@@ -115,7 +115,7 @@ function ViewProductPage() {
 
         {
           sortedProducts.map((p) => (
-          <div key={p.id} className="product-card" onClick={() => navigate(`/viewproducts/${p.id}`)}>
+          <div key={p.id} className="product-card" onClick={() => navigate(`/viewproducts/${p.id}`)} style={{cursor:"pointer"}}>
 
             <img src={p.imageUrl} alt={p.name} />
 

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "./ProductDetails.css";
 
 function ProductDetails() {
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -16,12 +18,16 @@ function ProductDetails() {
         Authorization: "Bearer " + token
       }
     })
-      .then(res => res.json())
-      .then(data => setProduct(data));
+      .then(res => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then(data => setProduct(data))
+      .catch(() => navigate("/viewproducts"));
   }, [id]);
 
   const handleAddToCart = async () => {
-    const res = await fetch("http://localhost:8080/api/cart", {
+    await fetch("http://localhost:8080/api/cart", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,30 +39,72 @@ function ProductDetails() {
       })
     });
 
-    const msg = await res.text();
-    alert(msg);
+    alert("Added to cart ✅");
   };
 
   if (!product) return <h2>Loading...</h2>;
 
   return (
-    <div>
-      <button onClick={() => navigate("/viewproducts")}>⬅ Back</button>
+    <div className="details-container">
 
-      <h1>{product.name}</h1>
-      <img src={product.imageUrl} alt="" width="200" />
-      <p>{product.description}</p>
-      <h3>₹ {product.price}</h3>
+      <button className="back-btn" onClick={() => navigate("/viewproducts")}>
+        ⬅ Back
+      </button>
 
-      <input
-        type="number"
-        value={qty}
-        min="1"
-        onChange={(e) => setQty(e.target.value)}
-      />
+      <div className="details-grid">
 
-      <button onClick={handleAddToCart}>Add to Cart 🛒</button>
-      <button onClick={() => navigate("/cart")}>Go to Cart 🛒</button>
+        {/* LEFT - IMAGE */}
+        <div className="image-section">
+          <img src={product.imageUrl} alt={product.name} />
+        </div>
+
+        {/* MIDDLE - INFO */}
+        <div className="info-section">
+          <h1>{product.name}</h1>
+
+          <p className="desc">{product.description}</p>
+
+          <h2 className="price">₹ {product.price}</h2>
+
+          <p><b>Category:</b> {product.category}</p>
+          <p><b>Stock:</b> {product.quantity}</p>
+
+          <ul className="about">
+            <li>High quality product</li>
+            <li>Fast delivery available</li>
+            <li>Cash on delivery supported</li>
+            <li>Easy return policy</li>
+          </ul>
+        </div>
+
+        {/* RIGHT - BUY BOX */}
+        <div className="buy-section">
+
+          <h2>₹ {product.price}</h2>
+
+          <p className="stock">
+            {product.quantity > 0 ? "In Stock ✅" : "Out of Stock ❌"}
+          </p>
+
+          <input
+            type="number"
+            min="1"
+            value={qty}
+            onChange={(e) => setQty(e.target.value)}
+          />
+
+          <button className="cart-btn" onClick={handleAddToCart}>
+            Add to Cart 🛒
+          </button>
+
+          <button className="cart-btn" onClick={() => navigate("/cart")}>Go to Cart 🛒</button>
+          <button className="buy-btn">
+            Buy Now ⚡
+          </button>
+
+        </div>
+
+      </div>
     </div>
   );
 }

@@ -58,6 +58,39 @@ public class CartController
         return cartRepository.findByUserEmail(email);
     }
 
+    @PutMapping("/update/{id}")
+    public String updateQuantity(@PathVariable Long id,
+                                 @RequestParam int quantity,
+                                 Authentication auth) {
+
+        CartItem item = cartRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        // 🔒 Security check
+        if (!item.getUserEmail().equals(auth.getName())) {
+            throw new RuntimeException("Unauthorized ❌");
+        }
+
+        item.setQuantity(quantity);
+        cartRepository.save(item);
+
+        return "Quantity Updated ✅";
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteItem(@PathVariable Long id, Authentication auth) {
+
+        CartItem item = cartRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        if (!item.getUserEmail().equals(auth.getName())) {
+            throw new RuntimeException("Unauthorized ❌");
+        }
+
+        cartRepository.delete(item);
+
+        return "Item Removed ❌";
+    }
 //    @GetMapping
 //    public CartItem getCartByid(@RequestParam int id)
 //    {
