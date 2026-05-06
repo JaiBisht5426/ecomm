@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./Cart.css";
 
 function CartPage() {
 
@@ -19,7 +20,6 @@ function CartPage() {
     fetchCart();
   }, []);
 
-  // ➕ Increase / ➖ Decrease
   const updateQty = async (id, newQty) => {
     if (newQty < 1) return;
 
@@ -30,10 +30,9 @@ function CartPage() {
       }
     });
 
-    fetchCart(); // refresh
+    fetchCart();
   };
 
-  // ❌ Remove item
   const deleteItem = async (id) => {
     await fetch(`http://localhost:8080/api/cart/delete/${id}`, {
       method: "DELETE",
@@ -51,41 +50,66 @@ function CartPage() {
   );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Your Cart 🛒</h2>
+    <div className="cart-container">
 
-      {cart.length === 0 ? (
-        <h3>Cart is empty</h3>
-      ) : (
-        cart.map(item => (
-          <div key={item.id} style={{
-            border: "1px solid gray",
-            padding: "10px",
-            marginBottom: "10px"
-          }}>
+      {/* LEFT SIDE */}
+      <div className="cart-items">
 
-            <h3>{item.product.name}</h3>
-            <p>₹ {item.product.price}</p>
+        <h2>Shopping Cart 🛒</h2>
 
-            {/* 🔥 Quantity Controls */}
-            <div>
-              <button onClick={() => updateQty(item.id, item.quantity - 1)}>➖</button>
-              <span style={{ margin: "0 10px" }}>{item.quantity}</span>
-              <button onClick={() => updateQty(item.id, item.quantity + 1)}>➕</button>
+        {cart.length === 0 ? (
+          <h3>Your cart is empty</h3>
+        ) : (
+          cart.map(item => (
+            <div key={item.id} className="cart-card">
+
+              {/* IMAGE */}
+              <img src={item.product.imageUrl} alt="" />
+
+              {/* INFO */}
+              <div className="cart-info">
+                <h3>{item.product.name}</h3>
+                <p className="price">₹ {item.product.price}</p>
+
+                <div className="qty-box">
+                  <button onClick={() => updateQty(item.id, item.quantity - 1)}>➖</button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => updateQty(item.id, item.quantity + 1)}>➕</button>
+                </div>
+
+                <p className="item-total">
+                  Total: ₹ {item.product.price * item.quantity}
+                </p>
+
+                <button
+                  className="remove-btn"
+                  onClick={() => deleteItem(item.id)}
+                >
+                  Remove ❌
+                </button>
+              </div>
+
             </div>
+          ))
+        )}
 
-            <p>Total: ₹ {item.product.price * item.quantity}</p>
+      </div>
 
-            {/* ❌ Remove */}
-            <button onClick={() => deleteItem(item.id)}>
-              Remove ❌
-            </button>
+      {/* RIGHT SIDE */}
+      <div className="cart-summary">
 
-          </div>
-        ))
-      )}
+        <h3>Order Summary</h3>
 
-      <h2>Total Amount: ₹ {total}</h2>
+        <p>Total Items: {cart.length}</p>
+
+        <h2>₹ {total}</h2>
+
+        <button className="checkout-btn">
+          Proceed to Checkout
+        </button>
+
+      </div>
+
     </div>
   );
 }

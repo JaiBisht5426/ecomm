@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./Product.css";
 import { useNavigate } from "react-router-dom";
-// import Navbar from "../components/Navbar";
-
 
 function ProductPage() {
 
   const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
+
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
@@ -16,6 +16,8 @@ function ProductPage() {
     category: "",
     imageUrl: ""
   });
+
+  const [editingProduct, setEditingProduct] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -35,7 +37,7 @@ function ProductPage() {
     fetchProducts();
   }, []);
 
-  // ✅ Handle input
+  // ✅ Handle input change
   const handleChange = (e) => {
     setNewProduct({
       ...newProduct,
@@ -43,93 +45,219 @@ function ProductPage() {
     });
   };
 
-  // ✅ Add product
+  // ✅ Submit (Add / Update)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try{
-    const res = await fetch("http://localhost:8080/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      },
-      body: JSON.stringify(newProduct)
-    });
+    try {
+      if (editingProduct) {
+        // ✏️ UPDATE
+        await fetch(`http://localhost:8080/api/products/${editingProduct.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token
+          },
+          body: JSON.stringify(newProduct)
+        });
 
-    const msg = await res.text();
-      alert(msg);
+        alert("Product Updated ✏️");
+        setEditingProduct(null);
 
-      fetchProducts(); // refresh list
+      } else {
+        // ➕ ADD
+        await fetch("http://localhost:8080/api/products", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token
+          },
+          body: JSON.stringify(newProduct)
+        });
+
+        alert("Product Added ✅");
+      }
+
+      // Reset form
+      setNewProduct({
+        name: "",
+        description: "",
+        price: "",
+        quantity: "",
+        category: "",
+        imageUrl: ""
+      });
+
+      fetchProducts();
 
     } catch (err) {
       alert("Error ❌");
     }
   };
 
+  // ✅ Delete
+  const handleDelete = async (id) => {
+
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    if (!confirmDelete) return;
+
+    await fetch(`http://localhost:8080/api/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    });
+
+    alert("Product Deleted ❌");
+    fetchProducts();
+  };
+
+  // ✅ Edit
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+    setNewProduct({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      category: product.category,
+      imageUrl: product.imageUrl
+    });
+  };
+
+  // ✅ Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     alert("Logged out ✅");
     navigate("/login");
   };
-//     setNewProduct({
-//       name: "",
-//       description: "",
-//       price: "",
-//       quantity: "",
-//       category: "",
-//       imageUrl: ""
-//     });
-
-//     fetchProducts();
-//   };
 
   return (
-    <div className="product-container">
+    <div className="admin-page">
 
-      <h1>🛍️ Products</h1>
-
-      {/* FORM */}
-      <div className="form-card">
-        <h3>Add Product</h3>
-
-        <form onSubmit={handleSubmit}>
-          <input name="name" placeholder="Name" value={newProduct.name} onChange={handleChange} />
-          <input name="description" placeholder="Description" value={newProduct.description} onChange={handleChange} />
-          <input name="price" placeholder="Price" value={newProduct.price} onChange={handleChange} />
-          <input name="quantity" placeholder="Quantity" value={newProduct.quantity} onChange={handleChange} />
-          <input name="category" placeholder="Category" value={newProduct.category} onChange={handleChange} />
-          <input name="imageUrl" placeholder="Image URL" value={newProduct.imageUrl} onChange={handleChange} />
-
-          <button type="submit">Add Product</button>
-        </form>
+      {/* HEADER */}
+      <div className="admin-header">
+        <h2>🛍️ Admin Panel</h2>
+        <button onClick={handleLogout}>Logout</button>
       </div>
 
-      <button onClick={handleLogout}>
-        Logout
-      </button>
+      <div className="admin-main">
 
-      {/* PRODUCT GRID */}
-      <div className="product-grid">
+        {/* LEFT - FORM */}
+        <div className="admin-form">
 
-        {
-          products.map((p) => (
-          <div key={p.id} className="product-card">
+          <h3>{editingProduct ? "Edit Product ✏️" : "Add Product ➕"}</h3>
 
-            <img src={p.imageUrl} alt={p.name} />
+          <form onSubmit={handleSubmit}>
 
-            <h3>{p.name}</h3>
-            <p>{p.description}</p>
+            <input
+              name="name"
+              placeholder="Product Name"
+              value={newProduct.name}
+              onChange={handleChange}
+              required
+            />
 
-            <div className="price">₹ {p.price}</div>
-            <div className="qty">Qty: {p.quantity}</div>
-            <div className="category">{p.category}</div>
+            <textarea
+              name="description"
+              placeholder="Description"
+              value={newProduct.description}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              name="price"
+              type="number"
+              placeholder="Price"
+              value={newProduct.price}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              name="quantity"
+              type="number"
+              placeholder="Quantity"
+              value={newProduct.quantity}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              name="category"
+              placeholder="Category"
+              value={newProduct.category}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              name="imageUrl"
+              placeholder="Image URL"
+              value={newProduct.imageUrl}
+              onChange={handleChange}
+              required
+            />
+
+            <button type="submit">
+              {editingProduct ? "Update Product" : "Add Product"}
+            </button>
+
+          </form>
+        </div>
+
+        {/* RIGHT - PRODUCTS */}
+        <div className="admin-products">
+
+          <h3>All Products</h3>
+
+          <div className="product-grid">
+
+            {
+              products.map((p) => (
+                <div key={p.id} className="admin-card">
+
+                  <img src={p.imageUrl} alt="" />
+
+                  <h4>{p.name}</h4>
+
+                  <p className="desc">{p.description}</p>
+
+                  <p className="price">₹ {p.price}</p>
+
+                  <p className="qty">Stock: {p.quantity}</p>
+
+                  <span className="category">{p.category}</span>
+
+                  {/* ACTION BUTTONS */}
+                  <div className="actions">
+
+                    <button
+                      className="edit-btn"
+                      onClick={() => handleEdit(p)}
+                    >
+                      Edit ✏️
+                    </button>
+
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(p.id)}
+                    >
+                      Delete ❌
+                    </button>
+
+                  </div>
+
+                </div>
+              ))
+            }
 
           </div>
-        ))}
+
+        </div>
 
       </div>
-
     </div>
   );
 }

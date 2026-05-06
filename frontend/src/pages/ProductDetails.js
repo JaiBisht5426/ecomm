@@ -9,6 +9,7 @@ function ProductDetails() {
 
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
+  const [selectedImage, setSelectedImage] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -18,12 +19,11 @@ function ProductDetails() {
         Authorization: "Bearer " + token
       }
     })
-      .then(res => {
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .then(data => setProduct(data))
-      .catch(() => navigate("/viewproducts"));
+      .then(res => res.json())
+      .then(data => {
+        setProduct(data);
+        setSelectedImage(data.imageUrl); // default image
+      });
   }, [id]);
 
   const handleAddToCart = async () => {
@@ -44,22 +44,44 @@ function ProductDetails() {
 
   if (!product) return <h2>Loading...</h2>;
 
+  // fake multiple images (later backend se bhi aa sakta hai)
+  const images = [
+    product.imageUrl,
+    product.imageUrl,
+    product.imageUrl,
+    product.imageUrl
+  ];
+
   return (
     <div className="details-container">
 
-      <button className="back-btn" onClick={() => navigate("/viewproducts")}>
-        ⬅ Back
-      </button>
+      <button onClick={() => navigate("/viewproducts")}>⬅ Back</button>
 
       <div className="details-grid">
 
-        {/* LEFT - IMAGE */}
-        <div className="image-section">
-          <img src={product.imageUrl} alt={product.name} />
+        {/* LEFT - IMAGE GALLERY */}
+        <div className="gallery">
+
+          <div className="thumbnails">
+            {images.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt=""
+                onClick={() => setSelectedImage(img)}
+              />
+            ))}
+          </div>
+
+          <div className="main-image">
+            <img src={selectedImage} alt="" />
+          </div>
+
         </div>
 
         {/* MIDDLE - INFO */}
-        <div className="info-section">
+        <div className="info">
+
           <h1>{product.name}</h1>
 
           <p className="desc">{product.description}</p>
@@ -69,16 +91,18 @@ function ProductDetails() {
           <p><b>Category:</b> {product.category}</p>
           <p><b>Stock:</b> {product.quantity}</p>
 
-          <ul className="about">
-            <li>High quality product</li>
+          <h3>About this item</h3>
+          <ul>
+            <li>High quality material</li>
+            <li>Durable & long lasting</li>
             <li>Fast delivery available</li>
-            <li>Cash on delivery supported</li>
             <li>Easy return policy</li>
           </ul>
+
         </div>
 
         {/* RIGHT - BUY BOX */}
-        <div className="buy-section">
+        <div className="buy-box">
 
           <h2>₹ {product.price}</h2>
 
@@ -96,7 +120,7 @@ function ProductDetails() {
           <button className="cart-btn" onClick={handleAddToCart}>
             Add to Cart 🛒
           </button>
-
+          <br />
           <button className="cart-btn" onClick={() => navigate("/cart")}>Go to Cart 🛒</button>
           <button className="buy-btn">
             Buy Now ⚡

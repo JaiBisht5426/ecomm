@@ -11,7 +11,7 @@ function ViewProductPage() {
   const [search, setSearch] = useState("");
 
   const [category, setCategory] = useState("");
-//   const [price, setPrice] = useState("");
+  //   const [price, setPrice] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [sortOrder, setSortOrder] = useState("");
@@ -20,21 +20,19 @@ function ViewProductPage() {
 
   // ✅ Fetch products
   const fetchProducts = async () => {
-    try
-    {
-    const res = await fetch("http://localhost:8080/api/products/viewproducts", {
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    });
+    try {
+      const res = await fetch("http://localhost:8080/api/products/viewproducts", {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
 
-    const data = await res.json();
-    setProducts(data);
+      const data = await res.json();
+      setProducts(data);
     }
 
-    catch(err)
-    {
-        console.error("Error:", err);
+    catch (err) {
+      console.error("Error:", err);
     }
   };
 
@@ -42,23 +40,22 @@ function ViewProductPage() {
     fetchProducts();
   }, []);
 
-   const filteredProducts = products.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase()) && 
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) &&
     (category === "" || p.category === category) &&
     (minPrice === "" || p.price >= minPrice) &&
     (maxPrice === "" || p.price <= maxPrice)
   );
 
-  const sortedProducts = [...filteredProducts].sort((a, b) => 
-    {
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortOrder === "low") {
-        return a.price - b.price;
+      return a.price - b.price;
     } else if (sortOrder === "high") {
-        return b.price - a.price;
+      return b.price - a.price;
     } else {
-        return 0;
+      return 0;
     }
-    });
+  });
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -67,70 +64,100 @@ function ViewProductPage() {
   };
 
   return (
-    <div className="container">
+    <div className="page">
 
-      <h2>Products</h2>
+      {/* 🔝 HEADER */}
+      <div className="header">
+        <h2>🛍️ Products</h2>
 
-      {/* 🔍 Search */}
-      <input
-        type="text"
-        placeholder="Search product..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="search-box"
-      />
+        <div className="header-actions">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-      <div className="filters">
-        <select onChange={(e) => setCategory(e.target.value)}>
-            <option value="">All Categories</option>
+          <button onClick={() => navigate("/cart")}>
+            🛒 Cart
+          </button>
+
+          <button onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <div className="main">
+
+        {/* 🧱 LEFT FILTER SIDEBAR */}
+        <div className="sidebar">
+
+          <h3>Filters</h3>
+
+          <label>Category</label>
+          <select onChange={(e) => setCategory(e.target.value)}>
+            <option value="">All</option>
             <option value="Electronics">Electronics</option>
             <option value="Clothing">Clothing</option>
             <option value="Books">Books</option>
-        </select>
+          </select>
 
-        <select onChange={(e) => setSortOrder(e.target.value)}>
-            <option value="">Sort By</option>
-            <option value="low">Price: Low -{">"} High</option>
-            <option value="high">Price: High -{">"} Low</option>
-        </select>
+          <label>Sort</label>
+          <select onChange={(e) => setSortOrder(e.target.value)}>
+            <option value="">None</option>
+            <option value="low">Price Low → High</option>
+            <option value="high">Price High → Low</option>
+          </select>
 
-                {/* Price */}
-        <input
-          type="number"
-          placeholder="Min Price"
-          onChange={(e) => setMinPrice(e.target.value)}
-        />
+          <label>Min Price</label>
+          <input type="number" onChange={(e) => setMinPrice(e.target.value)} />
 
-        <input
-          type="number"
-          placeholder="Max Price"
-          onChange={(e) => setMaxPrice(e.target.value)}
-        />
+          <label>Max Price</label>
+          <input type="number" onChange={(e) => setMaxPrice(e.target.value)} />
+
+        </div>
+
+        {/* 🛒 PRODUCT GRID */}
+        <div className="products">
+
+          {
+            sortedProducts.map((p) => (
+              <div
+                key={p.id}
+                className="card"
+                onClick={() => navigate(`/viewproducts/${p.id}`)}
+              >
+
+                <img src={p.imageUrl} alt="" />
+
+                <h3>{p.name}</h3>
+
+                <p className="desc">{p.description}</p>
+
+                <h4>₹ {p.price}</h4>
+
+                <p className="stock">
+                  {p.quantity > 0 ? "In Stock" : "Out of Stock"}
+                </p>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // 🔥 IMPORTANT
+                    navigate("/cart");
+                  }}
+                >
+                  Go to Cart 🛒
+                </button>
+
+              </div>
+            ))
+          }
+
+        </div>
+
       </div>
-      <button onClick={handleLogout}>
-        Logout
-      </button>
-
-      <div className="product-grid">
-
-        {
-          sortedProducts.map((p) => (
-          <div key={p.id} className="product-card" onClick={() => navigate(`/viewproducts/${p.id}`)} style={{cursor:"pointer"}}>
-
-            <img src={p.imageUrl} alt={p.name} />
-
-            <h3>{p.name}</h3>
-            <p>{p.description}</p>
-
-            <div className="price">₹ {p.price}</div>
-            <div className="qty">Qty: {p.quantity}</div>
-            <div className="category">{p.category}</div>
-            <button onClick={() => navigate("/cart")}>Go to Cart 🛒</button>
-          </div>
-        ))}
-       </div>
-
-      </div>
+    </div>
   );
 }
 
