@@ -29,7 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/cart/**").authenticated()
                         // 👇 sirf ADMIN product add kar sakta hai
                         .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
-
+                        .requestMatchers("/api/payment/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
