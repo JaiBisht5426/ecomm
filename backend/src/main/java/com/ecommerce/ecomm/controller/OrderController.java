@@ -1,6 +1,7 @@
 package com.ecommerce.ecomm.controller;
 
 
+import com.ecommerce.ecomm.dto.CheckoutRequest;
 import com.ecommerce.ecomm.model.*;
 import com.ecommerce.ecomm.repository.*;
 
@@ -33,7 +34,7 @@ public class OrderController {
 
     // ✅ CHECKOUT API
     @PostMapping("/checkout")
-    public String checkout(Authentication auth) {
+    public String checkout(@RequestBody CheckoutRequest request, Authentication auth) {
 
         String email = auth.getName();
 
@@ -56,6 +57,27 @@ public class OrderController {
         order.setStatus("ORDER_PLACED");
 
         order.setOrderDate(LocalDateTime.now());
+
+        order.setFullName(
+                request.getAddress().getFullName());
+
+        order.setPhone(
+                request.getAddress().getPhone());
+
+        order.setCity(
+                request.getAddress().getCity());
+
+        order.setState(
+                request.getAddress().getState());
+
+        order.setPincode(
+                request.getAddress().getPincode());
+
+        order.setAddressLine(
+                request.getAddress().getAddressLine());
+
+        order.setPaymentMethod(
+                request.getPaymentMethod());
 
         List<OrderItem> orderItems = new ArrayList<>();
 

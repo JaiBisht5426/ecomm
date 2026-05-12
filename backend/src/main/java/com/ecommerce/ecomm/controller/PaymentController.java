@@ -7,6 +7,7 @@ import com.razorpay.RazorpayClient;
 
 import org.json.JSONObject;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,12 @@ import java.util.List;
 public class PaymentController {
 
     private final CartRepository cartRepository;
+
+    @Value("${razorpay.key}")
+    private String razorpayKey;
+
+    @Value("${razorpay.secret}")
+    private String razorpaySecret;
 
     public PaymentController(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
@@ -47,7 +54,7 @@ public class PaymentController {
         // 🔥 convert rupees → paise
         int amount = total.multiply(BigDecimal.valueOf(100)).intValue();
 
-        RazorpayClient client = new RazorpayClient("rzp_test_So76F3CZHFymUy", "8VCNHPfUsGou8czGGBJmmTX1");
+        RazorpayClient client = new RazorpayClient(razorpayKey, razorpaySecret);
 
         JSONObject orderRequest = new JSONObject();
 

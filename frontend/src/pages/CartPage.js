@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from "react";
 import "./Cart.css";
-import { useNavigate } from "react-router-dom";
 
 function CartPage() {
 
   const [cart, setCart] = useState([]);
 
+  // 🔥 ADDRESS
+  const [address, setAddress] = useState({
+    fullName: "",
+    phone: "",
+    city: "",
+    state: "",
+    pincode: "",
+    addressLine: ""
+  });
+
+  // 🔥 PAYMENT METHOD
+  const [paymentMethod, setPaymentMethod] = useState("COD");
+
   const token = localStorage.getItem("token");
 
-  const navigate = useNavigate();
-
+  // ✅ FETCH CART
   const fetchCart = () => {
+
     fetch("http://localhost:8080/api/cart", {
       headers: {
         Authorization: "Bearer " + token
@@ -24,6 +36,7 @@ function CartPage() {
     fetchCart();
   }, []);
 
+  // ✅ UPDATE QUANTITY
   const updateQty = async (id, newQty) => {
 
     if (newQty < 1) return;
@@ -41,6 +54,7 @@ function CartPage() {
     fetchCart();
   };
 
+  // ✅ DELETE ITEM
   const deleteItem = async (id) => {
 
     await fetch(
@@ -56,74 +70,138 @@ function CartPage() {
     fetchCart();
   };
 
-  // 🔥 TOTAL
+  // ✅ HANDLE ADDRESS INPUT
+  const handleChange = (e) => {
+
+    setAddress({
+      ...address,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  // ✅ TOTAL
   const total = cart.reduce(
     (sum, item) =>
       sum + item.product.price * item.quantity,
     0
   );
 
-  // 🔥 PAYMENT FUNCTION
-  const handlePayment = async () => {
+  // ✅ PLACE ORDER / PAYMENT
+  const placeOrder = async () => {
 
-    try {
+    // 🔥 VALIDATION
+    if (
+      !address.fullName ||
+      !address.phone ||
+      !address.city ||
+      !address.state ||
+      !address.pincode ||
+      !address.addressLine
+    ) {
+      alert("Please fill all address fields ❌");
+      return;
+    }
 
-      const res = await fetch(
-        "http://localhost:8080/api/payment/create-order",
+    // 🔥 COD FLOW
+    if (paymentMethod === "COD") {
+
+      await fetch(
+        "http://localhost:8080/api/orders/checkout",
         {
           method: "POST",
           headers: {
-            Authorization: "Bearer " + token
-          }
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            address,
+            paymentMethod
+          })
         }
       );
 
-      const order = await res.json();
+      alert("Order Placed Successfully ✅");
 
-      const options = {
+      window.location.reload();
+    }
 
-        key: "rzp_test_So76F3CZHFymUy",
+    // 🔥 ONLINE PAYMENT FLOW
+    else {
 
-        amount: order.amount,
+      try {
 
-        currency: order.currency,
-
-        name: "My Ecommerce",
-
-        description: "Order Payment",
-
-        order_id: order.id,
-
-        handler: async function (response) {
-
-          alert("Payment Successful ✅");
-
-          // 🔥 checkout after payment
-          await fetch(
-            "http://localhost:8080/api/orders/checkout",
-            {
-              method: "POST",
-              headers: {
-                Authorization: "Bearer " + token
-              }
+        // 🔥 CREATE RAZORPAY ORDER
+        const res = await fetch(
+          "http://localhost:8080/api/payment/create-order",
+          {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + token
             }
-          );
+          }
+        );
 
-          alert("Order Placed ✅");
+        const order = await res.json();
 
-          window.location.reload();
-        }
-      };
+        // 🔥 RAZORPAY OPTIONS
+        const options = {
 
-      const razor = new window.Razorpay(options);
+          key: "YOUR KEY",
 
-      razor.open();
+          amount: order.amount,
 
-    } catch (err) {
+          currency: order.currency,
 
-      console.error(err);
+          name: "My Ecommerce",
 
-      alert("Something went wrong ❌");
+          description: "Order Payment",
+
+          order_id: order.id,
+
+          prefill: {
+            name: address.fullName,
+            contact: address.phone
+          },
+
+          theme: {
+            color: "#3399cc"
+          },
+
+          handler: async function (response) {
+
+            // 🔥 AFTER SUCCESS PAYMENT
+            await fetch(
+              "http://localhost:8080/api/orders/checkout",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + token,
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  address,
+                  paymentMethod
+                })
+              }
+            );
+
+            alert("Payment Successful ✅");
+
+            window.location.reload();
+          }
+        };
+
+        // 🔥 OPEN RAZORPAY
+        const razor = new window.Razorpay(options);
+
+        razor.open();
+
+      } catch (err) {
+
+        console.error(err);
+
+        alert("Payment Failed ❌");
+      }
     }
   };
 
@@ -156,6 +234,7 @@ function CartPage() {
                   ₹ {item.product.price}
                 </p>
 
+                {/* QUANTITY */}
                 <div className="qty-box">
 
                   <button
@@ -189,6 +268,7 @@ function CartPage() {
                   {item.product.price * item.quantity}
                 </p>
 
+                {/* REMOVE */}
                 <button
                   className="remove-btn"
                   onClick={() => deleteItem(item.id)}
@@ -207,18 +287,81 @@ function CartPage() {
       {/* RIGHT SIDE */}
       <div className="cart-summary">
 
+        {/* ADDRESS */}
+        <h3>Delivery Address 📍</h3>
+
+        <input
+          type="text"
+          name="fullName"
+          placeholder="Full Name"
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="phone"
+          placeholder="Phone Number"
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="city"
+          placeholder="City"
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="state"
+          placeholder="State"
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="pincode"
+          placeholder="Pincode"
+          onChange={handleChange}
+        />
+
+        <textarea
+          name="addressLine"
+          placeholder="Full Address"
+          onChange={handleChange}
+        />
+
+        {/* PAYMENT METHOD */}
+        <h3>Payment Method 💳</h3>
+
+        <select
+          value={paymentMethod}
+          onChange={(e) =>
+            setPaymentMethod(e.target.value)
+          }
+        >
+          <option value="COD">
+            Cash On Delivery
+          </option>
+
+          <option value="ONLINE">
+            Online Payment
+          </option>
+        </select>
+
+        {/* SUMMARY */}
         <h3>Order Summary</h3>
 
         <p>Total Items: {cart.length}</p>
 
         <h2>₹ {total}</h2>
 
-        {/* 🔥 PAYMENT BUTTON */}
+        {/* BUTTON */}
         <button
           className="checkout-btn"
-          onClick={handlePayment}
+          onClick={placeOrder}
         >
-          Proceed to Checkout 💳
+          Place Order 🚀
         </button>
 
       </div>

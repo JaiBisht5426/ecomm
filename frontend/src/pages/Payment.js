@@ -20,7 +20,7 @@ const handlePayment = async () => {
     // 🔥 Razorpay options
     const options = {
 
-      key: "rzp_test_So76F3CZHFymUy",
+      key: "",
 
       amount: order.amount,
 
