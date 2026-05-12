@@ -146,7 +146,7 @@ function CartPage() {
         // 🔥 RAZORPAY OPTIONS
         const options = {
 
-          key: "YOUR KEY",
+          key: "rzp_test_So76F3CZHFymUy",
 
           amount: order.amount,
 
