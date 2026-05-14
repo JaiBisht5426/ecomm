@@ -8,6 +8,7 @@ import ProtectedRoute from './pages/ProtectedRoute';
 import ViewProductPage from './pages/ViewProductPage';
 import ProductDetails from "./pages/ProductDetails";
 import CartPage from "./pages/CartPage";
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/viewproducts" element={<ViewProductPage />} />
         <Route path="/viewproducts/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>}/>
+        <Route path="/orders" element={<OrderHistoryPage/>}/>
       </Routes>
     </Router>
   );

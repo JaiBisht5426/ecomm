@@ -78,6 +78,10 @@ function ViewProductPage() {
             onChange={(e) => setSearch(e.target.value)}
           />
 
+          <button onClick={() => navigate("/orders")}>
+            My Orders
+          </button>
+
           <button onClick={() => navigate("/cart")}>
             🛒 Cart
           </button>

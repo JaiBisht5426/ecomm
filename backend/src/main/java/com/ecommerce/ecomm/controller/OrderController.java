@@ -32,6 +32,32 @@ public class OrderController {
         this.userRepository = userRepository;
     }
 
+//    @GetMapping("/orderhistory")
+//    public List<List<OrderItem>> orderhistory(Authentication auth)
+//    {
+//        String email = auth.getName();
+//        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+//        List<Order> orders = orderRepository.findByUser(user);
+//        List<List<OrderItem>> oii = new ArrayList<>();
+//        for(Order ord: orders)
+//        {
+//            List<OrderItem> oi= ord.getItems();
+//            oii.add(oi);
+//        }
+//        return oii;
+//    }
+
+    @GetMapping("/my-orders")
+    public List<Order> getMyOrders(Authentication auth)
+    {
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return orderRepository.findByUser(user);
+    }
+
     // ✅ CHECKOUT API
     @PostMapping("/checkout")
     public String checkout(@RequestBody CheckoutRequest request, Authentication auth) {
