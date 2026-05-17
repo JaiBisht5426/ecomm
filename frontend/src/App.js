@@ -10,6 +10,7 @@ import ProductDetails from "./pages/ProductDetails";
 import CartPage from "./pages/CartPage";
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/viewproducts/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>}/>
         <Route path="/orders" element={<OrderHistoryPage/>}/>
+        <Route path="/reset-password" element={<ResetPasswordPage />}/>
       </Routes>
     </Router>
   );

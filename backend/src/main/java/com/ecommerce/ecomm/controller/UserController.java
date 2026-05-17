@@ -1,5 +1,6 @@
 package com.ecommerce.ecomm.controller;
 
+import com.ecommerce.ecomm.dto.UpdateProfileRequest;
 import com.ecommerce.ecomm.model.User;
 import com.ecommerce.ecomm.repository.UserRepository;
 import com.ecommerce.ecomm.util.JwtUtil;
@@ -75,5 +76,25 @@ public class UserController {
         return "Welcome " + auth.getName();
     }
 
+    @PutMapping("/update-profile")
+    public String updateProfile(@RequestBody UpdateProfileRequest request, Authentication auth) {
 
+        // 🔥 logged in user
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        // 🔥 update fields
+        user.setName(request.getName());
+
+        user.setPhone(request.getPhone());
+
+//        user.setEmail(request.getEmail());
+
+        userRepository.save(user);
+
+        return "Profile Updated Successfully ✅";
+    }
 }

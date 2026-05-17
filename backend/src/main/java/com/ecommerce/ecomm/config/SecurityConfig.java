@@ -25,7 +25,13 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                        .requestMatchers(
+                                "/api/users/login",
+                                "/api/users/register",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password",
+                                "/api/users/update-profile"
+                        ).permitAll()
                         .requestMatchers("/api/cart/**").authenticated()
                         // 👇 sirf ADMIN product add kar sakta hai
                         .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")

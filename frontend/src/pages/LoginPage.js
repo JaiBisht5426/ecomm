@@ -57,6 +57,44 @@ function LoginPage() {
     }
   };
 
+  const handleForgotPassword = async () => {
+
+    if(!user.email)
+    {
+      alert("Please enter your email first");
+      return;
+    }
+
+    try{
+
+      const response = await fetch(
+        "http://localhost:8080/api/auth/forgot-password",
+        {
+          method: "POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body: JSON.stringify({
+            email:user.email
+          })
+        }
+      );
+
+      if(!response.ok)
+      {
+        throw new Error("Failed");
+      }
+
+      alert(
+        "Reset password link sent to your email"
+      );
+    }
+    catch(error)
+    {
+      alert("Something went wrong");
+    }
+  };
+
   return (
     <div className="login-container">
 
@@ -83,6 +121,13 @@ function LoginPage() {
           <button type="submit">Login</button>
         </form>
 
+        <p
+          className="forgot-password"
+          onClick={handleForgotPassword}
+        >
+          Forgot Password?
+        </p>
+        
         <p>
           Don't have an account? 
           <span onClick={() => navigate("/register")}> Register</span>

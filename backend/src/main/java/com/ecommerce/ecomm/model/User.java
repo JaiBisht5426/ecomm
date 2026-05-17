@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="user")
 public class User {
@@ -28,19 +30,25 @@ public class User {
     private String phone;
 
     private String role;
-    
+
+    private String resetToken;
+
+    private LocalDateTime tokenExpiry;
+
     public User()
     {
 
     }
 
-    public User(Integer id, String name, String email, String password, String phone, String role) {
+    public User(Integer id, String name, String email, String password, String phone, String role, String resetToken, LocalDateTime tokenExpiry) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
         this.role = role;
+        this.resetToken = resetToken;
+        this.tokenExpiry = tokenExpiry;
     }
 
     public Integer getId() {
@@ -88,5 +96,21 @@ public class User {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getTokenExpiry() {
+        return tokenExpiry;
+    }
+
+    public void setTokenExpiry(LocalDateTime tokenExpiry) {
+        this.tokenExpiry = tokenExpiry;
     }
 }

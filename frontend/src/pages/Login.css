@@ -48,3 +48,15 @@
   cursor: pointer;
   margin-left: 5px;
 }
+
+.forgot-password {
+  color: blue;
+  cursor: pointer;
+  margin-top: 12px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
