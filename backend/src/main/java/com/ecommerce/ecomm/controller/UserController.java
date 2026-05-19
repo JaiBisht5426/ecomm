@@ -1,5 +1,6 @@
 package com.ecommerce.ecomm.controller;
 
+import com.ecommerce.ecomm.dto.ChangePasswordRequest;
 import com.ecommerce.ecomm.dto.UpdateProfileRequest;
 import com.ecommerce.ecomm.model.User;
 import com.ecommerce.ecomm.repository.UserRepository;
@@ -96,5 +97,35 @@ public class UserController {
         userRepository.save(user);
 
         return "Profile Updated Successfully ✅";
+    }
+
+    @GetMapping("/profile")
+    public User getProfile(Authentication auth)
+    {
+        String email = auth.getName();
+
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new RuntimeException("User not found"));
+    }
+
+    @PutMapping("/change-password")
+    public String changePassword(@RequestBody ChangePasswordRequest request, Authentication auth)
+    {
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean isMatch = passwordEncoder.matches(request.getOldPassword(), user.getPassword());
+
+        if(!isMatch)
+        {
+            return "Old Password Incorrect";
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        userRepository.save(user);
+
+        return "Password Updated Successfully";
     }
 }

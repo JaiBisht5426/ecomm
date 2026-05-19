@@ -11,6 +11,7 @@ import CartPage from "./pages/CartPage";
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ProfilePage from './pages/ProfilePage';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>}/>
         <Route path="/orders" element={<OrderHistoryPage/>}/>
         <Route path="/reset-password" element={<ResetPasswordPage />}/>
+        <Route path="/profile" element={<ProfilePage/>}/>
       </Routes>
     </Router>
   );

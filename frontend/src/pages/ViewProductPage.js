@@ -63,6 +63,10 @@ function ViewProductPage() {
     navigate("/login");
   };
 
+  // const handleProfile = () =>{
+
+  // }
+
   return (
     <div className="page">
 
@@ -88,6 +92,11 @@ function ViewProductPage() {
 
           <button onClick={handleLogout}>
             Logout
+          </button>
+
+
+          <button onClick={() => navigate("/profile")}>
+            My Profile
           </button>
         </div>
       </div>

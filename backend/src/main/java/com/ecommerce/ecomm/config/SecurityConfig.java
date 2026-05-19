@@ -29,10 +29,13 @@ public class SecurityConfig {
                                 "/api/users/login",
                                 "/api/users/register",
                                 "/api/auth/forgot-password",
-                                "/api/auth/reset-password",
-                                "/api/users/update-profile"
+                                "/api/auth/reset-password"
                         ).permitAll()
                         .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers(
+                                "/api/users/update-profile",
+                                "/api/users/profile"
+                        ).authenticated()
                         // 👇 sirf ADMIN product add kar sakta hai
                         .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers("/api/payment/**").permitAll()
