@@ -63,9 +63,28 @@ function ViewProductPage() {
     navigate("/login");
   };
 
-  // const handleProfile = () =>{
+  const handleAddToCart = async (productId) => {
+    try {
+      await fetch("http://localhost:8080/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({
+          product: { id: productId },
+          quantity: 1
+        })
+      });
 
-  // }
+      alert("Added to cart ✅");
+    }
+
+    catch (err) {
+      console.error(err);
+      alert("Failed to add product");
+    }
+  };
 
   return (
     <div className="page">
@@ -156,11 +175,11 @@ function ViewProductPage() {
 
                 <button
                   onClick={(e) => {
-                    e.stopPropagation(); // 🔥 IMPORTANT
-                    navigate("/cart");
+                    e.stopPropagation(); // card click trigger nahi hoga
+                    handleAddToCart(p.id);
                   }}
                 >
-                  Go to Cart 🛒
+                  Add to Cart 🛒
                 </button>
 
               </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./Profile.css";
 
 function ProfilePage() {
     const token = localStorage.getItem("token");
@@ -80,25 +81,24 @@ function ProfilePage() {
     const updatePassword = async (e) => {
         e.preventDefault();
 
-        try{
+        try {
             const res = await fetch(
                 "http://localhost:8080/api/users/change-password",
-            {
-                method: "PUT",
+                {
+                    method: "PUT",
 
-                headers:{
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + token
-                },
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token
+                    },
 
-                body: JSON.stringify(passwordData)
-            });
+                    body: JSON.stringify(passwordData)
+                });
 
             const msg = await res.text();
             alert(msg);
         }
-        catch(err)
-        {
+        catch (err) {
             console.error(err);
             alert("Password Update Failed");
         }
@@ -106,55 +106,81 @@ function ProfilePage() {
     return (
         <div className="profile-container">
 
-            <h2>My Profile 👤</h2>
+            {/* PROFILE CARD */}
+            <div className="profile-card">
 
-            <form onSubmit={handleUpdate}>
+                <h2 className="profile-title">
+                    My Profile 👤
+                </h2>
 
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Enter Name"
-                    value={profile.name}
-                    onChange={handleChange}
-                />
+                <form
+                    className="profile-form"
+                    onSubmit={handleUpdate}
+                >
 
-                <input
-                    type="text"
-                    name="phone"
-                    placeholder="Enter Phone"
-                    value={profile.phone}
-                    onChange={handleChange}
-                />
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Enter Name"
+                        value={profile.name}
+                        onChange={handleChange}
+                    />
 
-                <button type="submit">
-                    Update Profile
-                </button>
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Enter Phone"
+                        value={profile.phone}
+                        onChange={handleChange}
+                    />
 
-            </form>
-            <h2>Change Password </h2>
+                    <button
+                        className="profile-btn"
+                        type="submit"
+                    >
+                        Update Profile
+                    </button>
 
-            <form onSubmit={updatePassword}>
-                <input
-                    type="password"
-                    name="oldPassword"
-                    placeholder="Old Password"
-                    onChange={handlePasswordChange}
-                />
+                </form>
 
-                <input
-                    type="password"
-                    name="newPassword"
-                    placeholder="New Password"
-                    onChange={handlePasswordChange}
-                />
+            </div>
 
-                <button type="submit">
-                    Update Password
-                </button>
+            {/* PASSWORD CARD */}
+            <div className="profile-card">
 
-            </form>
+                <h2 className="profile-subtitle">
+                    Change Password 🔒
+                </h2>
 
+                <form
+                    className="profile-form"
+                    onSubmit={updatePassword}
+                >
 
+                    <input
+                        type="password"
+                        name="oldPassword"
+                        placeholder="Old Password"
+                        onChange={handlePasswordChange}
+                    />
+
+                    <input
+                        type="password"
+                        name="newPassword"
+                        placeholder="New Password"
+                        onChange={handlePasswordChange}
+                    />
+
+                    <button
+                        className="profile-btn password-btn"
+                        type="submit"
+                    >
+                        Update Password
+                    </button>
+
+                </form>
+
+            </div>
 
         </div>
     );
