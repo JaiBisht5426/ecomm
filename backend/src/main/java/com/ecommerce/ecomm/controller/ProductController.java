@@ -1,6 +1,7 @@
 package com.ecommerce.ecomm.controller;
 
 import com.ecommerce.ecomm.model.Product;
+import com.ecommerce.ecomm.repository.CartRepository;
 import com.ecommerce.ecomm.repository.ProductRepository;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,11 +15,13 @@ import java.util.List;
 public class ProductController {
 
     private final ProductRepository productRepository;
+    private final CartRepository cartRepository;
 
-    public ProductController(ProductRepository productRepository)
+    public ProductController(ProductRepository productRepository, CartRepository cartRepository)
 
     {
         this.productRepository = productRepository;
+        this.cartRepository = cartRepository;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -28,6 +31,7 @@ public class ProductController {
         return "Product Added ✅";
     }
 
+//    @PreAuthorize("hasRole('User')")
     @GetMapping("/viewproducts")
     public List<Product> viewProducts()
     {
@@ -79,19 +83,20 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteProduct(@PathVariable Long id) {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
+        cartRepository.deleteByProductId(id);
         productRepository.delete(product);
 
         return "Product Deleted ❌";
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String updateProduct(@PathVariable Long id,
                                 @RequestBody Product updatedProduct) {
 

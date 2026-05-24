@@ -5,6 +5,7 @@ import com.ecommerce.ecomm.dto.ResetPasswordRequest;
 import com.ecommerce.ecomm.model.User;
 import com.ecommerce.ecomm.repository.UserRepository;
 import com.ecommerce.ecomm.service.ForgotPassword;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,8 +37,7 @@ public class ForgotPasswordController
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(
-           @RequestBody ResetPasswordRequest request
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request
     ) {
 
         User user = userRepository

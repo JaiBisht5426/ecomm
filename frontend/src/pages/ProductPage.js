@@ -101,15 +101,41 @@ function ProductPage() {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
     if (!confirmDelete) return;
 
-    await fetch(`http://localhost:8080/api/products/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    });
+    try {
 
-    alert("Product Deleted ❌");
-    fetchProducts();
+      const response = await fetch(`http://localhost:8080/api/products/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
+
+      console.log("Status:", response.status);
+
+      const data = await response.text();
+
+      console.log("Response:", data);
+
+      if (response.ok) {
+
+        alert("Product Deleted ✅");
+
+        fetchProducts();
+
+      } else {
+
+        alert("Delete Failed: " + data);
+
+      }
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Something went wrong");
+
+    }
+
   };
 
   // ✅ Edit

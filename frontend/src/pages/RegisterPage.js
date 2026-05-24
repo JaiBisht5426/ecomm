@@ -21,27 +21,44 @@ function RegisterPage() {
   };
 
   const handleRegister = async (e) => {
+
     e.preventDefault();
 
     try {
+
       const response = await fetch("http://localhost:8080/api/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          ...user,
-          phone: Number(user.phone) // 👈 important
-        })
+        body: JSON.stringify(user)
       });
 
-      const data = await response.text();
+      const data = await response.json();
 
-      alert(data);
+      if (!response.ok) {
+
+        alert(
+          data.name ||
+          data.email ||
+          data.password ||
+          data.phone ||
+          "Validation Failed ❌"
+        );
+
+        return;
+      }
+
+      alert("Registration Successful ✅");
+
       navigate("/login");
 
     } catch (error) {
+
+      console.log(error);
+
       alert("Registration Failed ❌");
+
     }
   };
 
