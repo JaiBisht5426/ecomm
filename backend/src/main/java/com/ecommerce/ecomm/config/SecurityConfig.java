@@ -33,7 +33,7 @@ public class SecurityConfig {
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password"
                         ).permitAll()
-                        .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers("/api/cart/**").hasRole("USER")
                         .requestMatchers(
                                 "/api/users/update-profile",
                                 "/api/users/profile"

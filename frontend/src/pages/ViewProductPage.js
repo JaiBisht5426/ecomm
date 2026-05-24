@@ -18,6 +18,9 @@ function ViewProductPage() {
 
   const token = localStorage.getItem("token");
 
+  const decoded = JSON.parse(atob(token.split(".")[1]));
+  const role = decoded.role;
+
   // ✅ Fetch products
   const fetchProducts = async () => {
     try {
@@ -104,10 +107,12 @@ function ViewProductPage() {
           <button onClick={() => navigate("/orders")}>
             My Orders
           </button>
-
-          <button onClick={() => navigate("/cart")}>
-            🛒 Cart
-          </button>
+          {
+            role === "USER" && (
+              <button onClick={() => navigate("/cart")}>
+                🛒 Cart
+              </button>
+            )}
 
           <button onClick={handleLogout}>
             Logout
@@ -173,14 +178,20 @@ function ViewProductPage() {
                   {p.quantity > 0 ? "In Stock" : "Out of Stock"}
                 </p>
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation(); // card click trigger nahi hoga
-                    handleAddToCart(p.id);
-                  }}
-                >
-                  Add to Cart 🛒
-                </button>
+                {
+                  role === "USER" && (
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(p.id);
+                      }}
+                    >
+                      Add to Cart 🛒
+                    </button>
+
+                  )
+                }
 
               </div>
             ))

@@ -12,6 +12,8 @@ function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState("");
 
   const token = localStorage.getItem("token");
+  const decoded = JSON.parse(atob(token.split(".")[1]));
+  const role = decoded.role;
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/products/${id}`, {
@@ -117,14 +119,29 @@ function ProductDetails() {
             onChange={(e) => setQty(e.target.value)}
           />
 
-          <button className="cart-btn" onClick={handleAddToCart}>
-            Add to Cart 🛒
-          </button>
+
+          {
+            role === "USER" && (
+              <button className="cart-btn" onClick={handleAddToCart}>
+                Add to Cart 🛒
+              </button>
+            )
+          }
           <br />
-          <button className="cart-btn" onClick={() => navigate("/cart")}>Go to Cart 🛒</button>
-          <button className="buy-btn">
-            Buy Now ⚡
-          </button>
+          {
+            role === "USER" && (
+              <button className="cart-btn" onClick={() => navigate("/cart")}>Go to Cart 🛒</button>
+            )
+          }
+
+          {
+            role === "USER" && (
+              <button className="buy-btn">
+                Buy Now ⚡
+              </button>
+            )
+          }
+
 
         </div>
 

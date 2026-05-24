@@ -4,6 +4,7 @@ import com.ecommerce.ecomm.model.CartItem;
 import com.ecommerce.ecomm.model.Product;
 import com.ecommerce.ecomm.repository.CartRepository;
 import com.ecommerce.ecomm.repository.ProductRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class CartController
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public String addToCart(@RequestBody CartItem item, Authentication auth) {
 
         String email = auth.getName();

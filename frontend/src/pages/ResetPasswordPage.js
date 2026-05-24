@@ -51,8 +51,15 @@ function ResetPasswordPage() {
         }
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed");
+        alert(
+          data.newPassword ||
+          "Validation Failed ❌"
+        );
+
+        return;
       }
 
       alert("Password reset successful ✅");
