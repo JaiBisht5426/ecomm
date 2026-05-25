@@ -4,10 +4,13 @@ import com.ecommerce.ecomm.model.Product;
 import com.ecommerce.ecomm.repository.CartRepository;
 import com.ecommerce.ecomm.repository.ProductRepository;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -26,9 +29,18 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public String addProduct(@RequestBody Product product) {
+    public ResponseEntity<?> addProduct(@Valid @RequestBody Product product)
+    {
+        Optional<Product> existingProduct = productRepository.findByName(product.getName());
+
+        if(existingProduct.isPresent())
+        {
+            return ResponseEntity.badRequest().body(
+                    Map.of("message", "Product already exists ❌")
+            );
+        }
         productRepository.save(product);
-        return "Product Added ✅";
+        return ResponseEntity.ok(Map.of("message", "Product Added ✅"));
     }
 
 //    @PreAuthorize("hasRole('User')")

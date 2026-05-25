@@ -1,6 +1,10 @@
 package com.ecommerce.ecomm.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 
@@ -16,8 +20,10 @@ public class Product {
 
     private String description;
 
+    @Positive(message = "Price must be greater than 0")
     private BigDecimal price;
 
+    @PositiveOrZero(message = "Quantity cannot be negative")
     private Integer quantity;
 
     private String imageUrl;

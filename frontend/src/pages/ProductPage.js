@@ -64,20 +64,39 @@ function ProductPage() {
         alert("Product Updated ✏️");
         setEditingProduct(null);
 
-      } else {
-        // ➕ ADD
-        await fetch("http://localhost:8080/api/products", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token
-          },
-          body: JSON.stringify(newProduct)
-        });
-
-        alert("Product Added ✅");
       }
+      else {
+        // ➕ ADD
+        try {
+          const response = await fetch("http://localhost:8080/api/products", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token
+            },
+            body: JSON.stringify(newProduct)
+          });
 
+          const data = await response.json();
+
+          if (!response.ok) {
+            alert(
+              data.price ||
+              data.quantity ||
+              data.message
+            );
+
+            return;
+          }
+
+          alert(data.message);
+        }
+
+        catch (error) {
+          console.log(error);
+          alert("Product Failed To Add❌");
+        }
+      };
       // Reset form
       setNewProduct({
         name: "",

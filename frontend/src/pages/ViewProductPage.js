@@ -182,6 +182,7 @@ function ViewProductPage() {
                   role === "USER" && (
 
                     <button
+                      disabled={p.quantity === 0}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleAddToCart(p.id);

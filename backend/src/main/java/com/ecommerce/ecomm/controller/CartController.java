@@ -33,6 +33,12 @@ public class CartController
         Product product = productRepository.findById(item.getProduct().getId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
+        if(product.getQuantity() <= 0)
+        {
+            throw new RuntimeException(
+                    "Product Out Of Stock"
+            );
+        }
         // 🔥 Check if already exists
         CartItem existingItem = cartRepository
                 .findByUserEmailAndProduct_Id(email, product.getId());

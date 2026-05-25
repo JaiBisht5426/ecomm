@@ -122,7 +122,7 @@ function ProductDetails() {
 
           {
             role === "USER" && (
-              <button className="cart-btn" onClick={handleAddToCart}>
+              <button disabled={product.quantity === 0} className="cart-btn" onClick={handleAddToCart}>
                 Add to Cart 🛒
               </button>
             )

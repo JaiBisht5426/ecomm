@@ -23,13 +23,15 @@ public class OrderController {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
 
+    private final ProductRepository productRepository;
     public OrderController(CartRepository cartRepository,
                            OrderRepository orderRepository,
-                           UserRepository userRepository) {
+                           UserRepository userRepository, ProductRepository productRepository) {
 
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
     }
 
 //    @GetMapping("/orderhistory")
@@ -111,6 +113,19 @@ public class OrderController {
 
         for (CartItem cart : cartItems) {
 
+            Product product = cart.getProduct();
+
+            if(product.getQuantity() < cart.getQuantity())
+            {
+                return product.getName() + " is Out Of Stock ❌";
+            }
+            product.setQuantity(
+                    product.getQuantity()
+                            - cart.getQuantity()
+            );
+
+            productRepository.save(product);
+
             OrderItem item = new OrderItem();
 
             item.setProductName(cart.getProduct().getName());
@@ -138,6 +153,7 @@ public class OrderController {
         orderRepository.save(order);
 
         cartRepository.deleteAll(cartItems);
+
 
         return "Order Placed Successfully ✅";
     }
