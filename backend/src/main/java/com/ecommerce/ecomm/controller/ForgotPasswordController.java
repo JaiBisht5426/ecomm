@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -62,8 +63,6 @@ public class ForgotPasswordController
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(
-                "Password reset successful"
-        );
+        return ResponseEntity.ok(Map.of("message", "Password reset successful"));
     }
 }

@@ -8,9 +8,12 @@ import com.ecommerce.ecomm.util.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,12 +27,13 @@ public class UserController {
     private JwtUtil jwtUtil;
 
     public UserController(UserRepository userRepository)
+
     {
         this.userRepository = userRepository;
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @RequestBody User dto) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User dto) {
 
         User user = new User();
 
@@ -47,7 +51,7 @@ public class UserController {
 
         userRepository.save(user);
 
-        return "User Registered Successfully ✅";
+        return ResponseEntity.ok(Map.of("message", "User Registered Successfully ✅"));
     }
 
     @GetMapping("/home")

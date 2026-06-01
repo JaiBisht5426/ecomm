@@ -49,15 +49,14 @@ function RegisterPage() {
         return;
       }
 
-      alert("Registration Successful ✅");
+      alert(data.message);
 
       navigate("/login");
 
     } catch (error) {
 
       console.log(error);
-
-      alert("Registration Failed ❌");
+      // alert("Registration Failed ❌");
 
     }
   };
