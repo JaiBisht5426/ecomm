@@ -23,15 +23,7 @@ public class RegisterTest extends BaseTest
 
         RegisterPage registerPage = new RegisterPage(driver);
 
-        registerPage.registerUser("Nidhi Shikawat", "nidhi1234@gmail.com","Nidhi@1234","9090909090");
+        registerPage.registerUser("Nidhi Shikawat", "nidhi1234gmail.com","Nidhi@1234","9090909090");
 
-
-//        wait.until(ExpectedConditions.alertIsPresent());
-//
-//        String alertText = driver.switchTo().alert().getText();
-//
-//        System.out.println(alertText);
-//
-//        driver.switchTo().alert().accept();
     }
 }
