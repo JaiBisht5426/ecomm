@@ -26,24 +26,24 @@ public class LoginTest extends BaseTest
                 "User is not redirected to Products Page"
         );
 
-//        Thread.sleep(10000);
+        Thread.sleep(5000);
     }
 
-//    @Test
-//    public void emptyFieldsValidationTest() throws InterruptedException {
-//
-//        LoginPage loginPage = new LoginPage(driver);
-//
-//        loginPage.clickLogin();
-//
-//        WebElement email =
-//                driver.findElement(By.name("email"));
-//
-//        String validationMessage =
-//                email.getAttribute("validationMessage");
-//
-//        Assert.assertFalse(
-//                validationMessage.isEmpty()
-//        );
-//    }
+    @Test
+    public void emptyFieldsValidationTest() throws InterruptedException {
+
+        LoginPage loginPage = new LoginPage(driver);
+
+        loginPage.clickLogin();
+
+        WebElement email =
+                driver.findElement(By.name("email"));
+
+        String validationMessage =
+                email.getAttribute("validationMessage");
+
+        Assert.assertFalse(
+                validationMessage.isEmpty()
+        );
+    }
 }
