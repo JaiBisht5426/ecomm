@@ -83,4 +83,88 @@ public class ProductPageTest extends BaseTest
                 products.size() > 0
         );
     }
+
+    @Test(priority = 4)
+    public void validateProductDetailsTest() throws InterruptedException {
+
+        LoginPage loginPage = new LoginPage(driver);
+
+        loginPage.login(
+                "raghushyam@gmail.com",
+                "RaghuGovind@1234"
+        );
+
+        WebDriverWait wait =
+                new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(".card")
+                )
+        );
+
+        Thread.sleep(3000);
+
+        driver.findElements(By.cssSelector(".card"))
+                .get(0)
+                .click();
+
+        Thread.sleep(3000);
+
+        Assert.assertTrue(
+                driver.findElement(By.tagName("h1"))
+                        .isDisplayed(),
+                "Product Name is not displayed"
+        );
+
+        Assert.assertTrue(
+                driver.getPageSource().contains("₹"),
+                "Product Price is missing"
+        );
+    }
+
+    @Test(priority = 5)
+    public void verifyProductNavigationTest() throws InterruptedException {
+
+        LoginPage loginPage = new LoginPage(driver);
+
+        loginPage.login(
+                "raghushyam@gmail.com",
+                "RaghuGovind@1234"
+        );
+
+        WebDriverWait wait =
+                new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(".card")
+                )
+        );
+
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.tagName("img")
+                )
+        );
+
+        Thread.sleep(3000);
+
+        driver.findElements(By.cssSelector(".card"))
+                .get(0)
+                .click();
+
+        Thread.sleep(3000);
+
+        wait.until(
+                ExpectedConditions.urlContains("/viewproducts/3")
+        );
+
+        System.out.println(driver.getCurrentUrl());
+
+        Assert.assertTrue(
+                driver.getCurrentUrl().contains("/viewproducts/3"),
+                "User not redirected to Product Details Page"
+        );
+    }
 }
