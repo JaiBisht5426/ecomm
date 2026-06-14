@@ -148,6 +148,18 @@ public class ProductPageTest extends BaseTest
                 )
         );
 
+        List<WebElement> images =
+                driver.findElements(By.tagName("img"));
+
+        System.out.println("Images Found: " + images.size());
+
+        for(WebElement img : images)
+        {
+            System.out.println(
+                    img.getAttribute("src")
+            );
+        }
+
         Thread.sleep(3000);
 
         driver.findElements(By.cssSelector(".card"))
