@@ -23,6 +23,9 @@ public class ProductPage
     private By productCards =
             By.cssSelector(".card");
 
+    private By addToCartButton =
+            By.xpath("(//button[contains(text(),'Add to Cart')])[1]");
+
     public void searchProduct(String product) {
 
         driver.findElement(searchBox)
@@ -41,5 +44,11 @@ public class ProductPage
 
         return driver.findElements(productCards)
                 .size();
+    }
+
+    public void clickAddToCart()
+    {
+        driver.findElement(addToCartButton)
+                .click();
     }
 }
