@@ -1,7 +1,9 @@
 package pages;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 
 public class ProductPage
 {
@@ -26,6 +28,9 @@ public class ProductPage
     private By addToCartButton =
             By.xpath("(//button[contains(text(),'Add to Cart')])[1]");
 
+    private By addToCartButton2 =
+            By.xpath("(//button[contains(text(),'Add to Cart')])[3]");
+
     public void searchProduct(String product) {
 
         driver.findElement(searchBox)
@@ -46,9 +51,20 @@ public class ProductPage
                 .size();
     }
 
-    public void clickAddToCart()
-    {
+    public void clickAddToCart() throws InterruptedException {
         driver.findElement(addToCartButton)
+                .click();
+
+        Thread.sleep(2000);
+
+        Alert alert =
+                driver.switchTo().alert();
+
+        alert.accept();
+
+        Thread.sleep(2000);
+
+        driver.findElement(addToCartButton2)
                 .click();
     }
 }
