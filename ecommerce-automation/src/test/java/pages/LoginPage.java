@@ -20,7 +20,6 @@ public class LoginPage
     }
 
     private By registerLink = By.xpath("//span[contains(text(),'Register')]");
-
     private By email = By.name("email");
     private By password = By.name("password");
     private By loginButton = By.xpath("//button[contains(text(),'Login')]");
